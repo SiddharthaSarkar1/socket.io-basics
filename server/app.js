@@ -32,6 +32,9 @@ app.get("/", (req, res) => {
 io.on("connection", (socket) => {
   console.log("User Connected");
   console.log("Id", socket.id);
+
+  socket.emit("welcome", `Welcome to the server, ${socket.id}`);
+  socket.broadcast.emit("broadcastmsg", `Socket id: "${socket.id}" joined the server.`);
 });
 
 server.listen(port, () => {
