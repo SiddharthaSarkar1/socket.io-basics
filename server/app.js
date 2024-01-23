@@ -30,11 +30,27 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log("User Connected");
-  console.log("Id", socket.id);
+  console.log("User Connected", socket.id);
 
-  socket.emit("welcome", `Welcome to the server, ${socket.id}`);
-  socket.broadcast.emit("broadcastmsg", `Socket id: "${socket.id}" joined the server.`);
+  // socket.emit("welcome", `Welcome to the server, ${socket.id}`);
+  // socket.broadcast.emit(
+  //   "broadcastmsg",
+  //   `Socket id: "${socket.id}" joined the server.`
+  // );
+
+  socket.on("message", ({ room, message }) => {
+    console.log({ room, message });
+
+    // socket.broadcast.emit("receive-message", data);
+
+    //to send message to a specific room io.to() and socket.to() will work same
+    socket.to(room).emit("receive-message", message);
+  });
+
+  //Disconnect
+  socket.on("disconnect", () => {
+    console.log("User Disconnected", socket.id);
+  });
 });
 
 server.listen(port, () => {
